@@ -39,10 +39,10 @@ public class SecurityConfig {
 
     // para usar el datasource se debe importar
     // en el pom el jpa starter
-    @Bean
-    UserDetailsService userDetailsService(DataSource dataSource) {
-        return new JdbcUserDetailsManager(dataSource);
-    }
+//    @Bean
+//    UserDetailsService userDetailsService(DataSource dataSource) {
+//        return new JdbcUserDetailsManager(dataSource);
+//    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
