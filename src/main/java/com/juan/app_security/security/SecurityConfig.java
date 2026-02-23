@@ -38,10 +38,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth ->
                         //auth.requestMatchers("/loans", "/balance", "/accounts", "/cards")
                         auth
-                                .requestMatchers("/loans").hasRole("VIEW_LOANS")
-                                .requestMatchers("/balance").hasRole("VIEW_BALANCE")
-                                .requestMatchers("/accounts").hasAnyRole("VIEW_ACCOUNT", "VIEW_CARDS")
-                                .requestMatchers("/cards").hasRole("VIEW_CARDS")
+                                .requestMatchers("/loans","/balance").hasRole("USER")
+                                .requestMatchers("/accounts", "/cards").hasRole("ADMIN")
                                 .anyRequest().permitAll()
                 ).formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
