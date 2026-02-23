@@ -14,8 +14,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -29,9 +33,14 @@ public class SecurityConfig {
                 ).formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
 
+        // Si NO configuraste el método CorsConfigurationSource corsConfigurationSource()
         // deshabilita los cors por momentos
-        http.cors(AbstractHttpConfigurer::disable);
-        http.csrf(AbstractHttpConfigurer::disable);
+        //http.cors(AbstractHttpConfigurer::disable);
+        //http.csrf(AbstractHttpConfigurer::disable);
+
+        // Si ya configuraste el método CorsConfigurationSource corsConfigurationSource()
+        http.cors(cors -> corsConfigurationSource());
+
         return http.build();
     }
 
@@ -52,6 +61,32 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        var config = new CorsConfiguration();
+
+        // Esta es un manera de agregar dominios permitidos
+        // config.setAllowedOrigins(List.of("http://localhost:4200", "http://otrodominio.com"));
+
+        // Cualquier página está permitida
+        config.setAllowedOrigins(List.of("*"));
+
+        // Por verbo http
+        // config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+
+        // Todos los headers
+        config.setAllowedHeaders(List.of("*"));
+
+        // Todos los verbos http
+        config.setAllowedMethods(List.of("*"));
+
+        var source = new UrlBasedCorsConfigurationSource();
+        // registra todas las configuraciones
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
 
 }
