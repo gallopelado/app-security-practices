@@ -13,7 +13,8 @@ create table customers(
 );
 
 CREATE TABLE roles(
-    role_name VARCHAR(50) PRIMARY KEY,
+    id bigserial PRIMARY KEY,
+    role_name VARCHAR(50),
     description VARCHAR(100),
     id_customer bigint,
     CONSTRAINT fk_customer FOREIGN KEY (id_customer) REFERENCES customers(id)

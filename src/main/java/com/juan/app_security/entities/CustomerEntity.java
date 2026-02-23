@@ -1,13 +1,11 @@
 package com.juan.app_security.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
 
 @Entity
 @Table(name = "customers")
@@ -15,6 +13,7 @@ import java.math.BigInteger;
 public class CustomerEntity implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger id;
 
     private String email;
@@ -22,6 +21,8 @@ public class CustomerEntity implements Serializable {
     @Column(name = "pwd")
     private String password;
 
-    @Column(name = "rol")
-    private String role;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_customer")
+    private List<RoleEntity> roles;
+
 }
