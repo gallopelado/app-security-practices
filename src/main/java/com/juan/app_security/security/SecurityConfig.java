@@ -3,6 +3,7 @@ package com.juan.app_security.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
@@ -25,6 +26,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @Configuration
+//@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -36,10 +38,10 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth ->
                         //auth.requestMatchers("/loans", "/balance", "/accounts", "/cards")
                         auth
-                                .requestMatchers("/loans").hasAuthority("VIEW_LOANS")
-                                .requestMatchers("/balance").hasAuthority("VIEW_BALANCE")
-                                .requestMatchers("/accounts").hasAnyAuthority("VIEW_ACCOUNT", "VIEW_CARDS")
-                                .requestMatchers("/cards").hasAuthority("VIEW_CARDS")
+                                .requestMatchers("/loans").hasRole("VIEW_LOANS")
+                                .requestMatchers("/balance").hasRole("VIEW_BALANCE")
+                                .requestMatchers("/accounts").hasAnyRole("VIEW_ACCOUNT", "VIEW_CARDS")
+                                .requestMatchers("/cards").hasRole("VIEW_CARDS")
                                 .anyRequest().permitAll()
                 ).formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());

@@ -10,7 +10,7 @@ VALUES
 INSERT INTO
     roles (role_name, description, id_customer)
 VALUES
-    ('VIEW_ACCOUNT', 'Can view account endpoint', 1),
-    ('VIEW_CARDS', 'Can view cards endpoint', 2),
-    ('VIEW_LOANS', 'Can view loans endpoint', 3),
-    ('VIEW_BALANCE', 'Can view balance endpoint', 4);
+    ('ROLE_ACCOUNT', 'Can view account endpoint', 1),
+    ('ROLE_CARDS', 'Can view cards endpoint', 2),
+    ('ROLE_LOANS', 'Can view loans endpoint', 3),
+    ('ROLE_BALANCE', 'Can view balance endpoint', 4);
