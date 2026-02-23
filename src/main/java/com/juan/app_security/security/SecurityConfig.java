@@ -14,6 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,6 +29,9 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        var requestHandler = new CsrfTokenRequestAttributeHandler();
+        requestHandler.setCsrfRequestAttributeName("_csrf");
+
         //http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
         http.authorizeHttpRequests(auth ->
                         auth.requestMatchers("/loans", "/balance", "/accounts", "/cards").authenticated()
@@ -40,6 +46,14 @@ public class SecurityConfig {
 
         // Si ya configuraste el método CorsConfigurationSource corsConfigurationSource()
         http.cors(cors -> corsConfigurationSource());
+
+        http.csrf(csrf -> csrf
+                .csrfTokenRequestHandler(requestHandler)
+                // ignorar en
+                .ignoringRequestMatchers("/welcome", "/about-us")
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+
+        ).addFilterAfter( new CsrfCookieFilter(), BasicAuthenticationFilter.class );
 
         return http.build();
     }
