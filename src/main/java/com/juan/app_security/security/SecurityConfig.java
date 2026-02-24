@@ -1,5 +1,6 @@
 package com.juan.app_security.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,7 +34,7 @@ import java.util.List;
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtValidationFilter jwtValidationFilter) throws Exception {
 
         http.sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -48,8 +49,10 @@ public class SecurityConfig {
                                 .requestMatchers("/loans","/balance").hasRole("USER")
                                 .requestMatchers("/accounts", "/cards").hasRole("ADMIN")
                                 .anyRequest().permitAll()
-                ).formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults());
+                );/*.formLogin(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults());*/
+
+        http.addFilterAfter(jwtValidationFilter,  BasicAuthenticationFilter.class);
 
         // Si NO configuraste el método CorsConfigurationSource corsConfigurationSource()
         // deshabilita los cors por momentos

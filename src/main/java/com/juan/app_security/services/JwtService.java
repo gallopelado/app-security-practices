@@ -41,7 +41,7 @@ public class JwtService {
         return this.getExpirationDateToken(token).before(new Date());
     }
 
-    private String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) {
         return this.getClaimsFromToken(token, Claims::getSubject);
     }
 
