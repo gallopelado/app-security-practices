@@ -27,7 +27,8 @@ public class AuthController {
         this.authenticate(request);
         final var userDetail = jwtUserDetailService.loadUserByUsername(request.getUsername());
         final var token = this.jwtService.generateToken(userDetail);
-        return ResponseEntity.ok(new JwtResponse(token));
+        final var expirationTimeLeftToken = this.jwtService.getExpirationTimeLeft(token);
+        return ResponseEntity.ok(new JwtResponse(token, expirationTimeLeftToken));
     }
 
     private void authenticate(JwtRequest request) {

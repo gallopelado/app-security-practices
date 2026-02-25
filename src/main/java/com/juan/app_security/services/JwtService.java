@@ -15,7 +15,9 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+    // 5 * 60 * 60 significa 5 h
+    // 60 * 60 significa 1 h
+    private static final long JWT_TOKEN_VALIDITY = 60;
     private static final String JWT_SECRET = "jxgEQe.XHuPq8VdbyYFNkAN.dudQ0903YUn4";
 
     private Claims getAllClaimsFromToken(String token) {
@@ -31,6 +33,19 @@ public class JwtService {
     public <T> T getClaimsFromToken(String token, Function<Claims, T> claimsResolver) {
         final var claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
+    }
+
+    /**
+     * getExpirationTimeLeft(String token)
+     *
+     * Es un reloj de Arena, retorna el tiempo de vida restante del token
+     *
+     * @param token
+     * @return
+     */
+    public long getExpirationTimeLeft(String token) {
+        Date expiration = getClaimsFromToken(token, Claims::getExpiration);
+        return expiration.getTime() - System.currentTimeMillis();
     }
 
     private Date getExpirationDateToken(String token) {

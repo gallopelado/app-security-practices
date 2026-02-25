@@ -39,15 +39,19 @@ public class JwtValidationFilter extends OncePerRequestFilter {
             // extraer el Bearer
             jwt = requestTokenHeader.substring(7);
             try {
-
                 username = jwtService.getUsernameFromToken(jwt);
-
             } catch (IllegalArgumentException e) {
-                log.error(e.getMessage());
-                //throw new BadCredentialsException("Invalid JWT token");
+                log.error("No se pudo obtener el token JWT {}", e.getMessage());
+                this.setErrorResponse(response, "JWT token invalido");
+                return;
             } catch (ExpiredJwtException e) {
-                log.warn(e.getMessage());
-                //throw new BadCredentialsException("Expired JWT token");
+                log.warn("El token JWT ha expirado para el usuario: {}", e.getClaims().getSubject());
+                this.setErrorResponse(response, "La sesión ha expirado. Por favor, ingrese de nuevo.");
+                return;
+            } catch (Exception e) {
+                log.error("Error procesando el JWT: {}", e.getMessage());
+                this.setErrorResponse(response, "Error de autenticación");
+                return;
             }
         }
 
@@ -63,6 +67,14 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
 
+    }
+
+    private void setErrorResponse(HttpServletResponse response, String mensaje) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String mensajeErrorJson = String.format("{\"error\": \"Unauthorized\", \"message\": \"%s\"}", mensaje);
+        response.getWriter().write(mensajeErrorJson);
     }
 
 }
