@@ -2,6 +2,7 @@ package com.juan.app_security.services;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
@@ -17,8 +18,14 @@ public class JwtService {
 
     // 5 * 60 * 60 significa 5 h
     // 60 * 60 significa 1 h
-    private static final long JWT_TOKEN_VALIDITY = 60;
-    private static final String JWT_SECRET = "jxgEQe.XHuPq8VdbyYFNkAN.dudQ0903YUn4";
+    // private static final long JWT_TOKEN_VALIDITY = 60;
+    // private static final String JWT_SECRET = "jxgEQe.XHuPq8VdbyYFNkAN.dudQ0903YUn4";
+
+    @Value("${jwt.secret}")
+    private String JWT_SECRET;
+
+    @Value("${jwt.expiration}")
+    private long JWT_TOKEN_VALIDITY;
 
     private Claims getAllClaimsFromToken(String token) {
         final var key = Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
